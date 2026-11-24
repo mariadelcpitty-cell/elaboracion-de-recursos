@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El viaje de Kike y el manatí del humedal | Material Multimedia Educativo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-dark: #0B1320;
+    --panel-dark: #131E30;
+    --navy-sub: rgba(11, 24, 46, 0.90);
+    --green: #1E7E4A;
+    --green-soft: #E6F4EC;
+    --amber: #C67A00;
+    --amber-soft: #FFF4E0;
+    --blue: #1B5E9A;
+    --blue-soft: #E6F0FA;
+    --gold: #E5B94C;
+    --text-light: #F8FAFC;
+    --text-muted: #CBD5E1;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Open Sans', Arial, sans-serif;
+    background: radial-gradient(circle at top, #182740 0%, #09101B 100%);
+    color: var(--text-light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+  }
+
+  .player-shell {
+    width: 100%;
+    max-width: 1120px;
+    background: var(--panel-dark);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: rgba(8, 14, 24, 0.85);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .top-title {
+    font-size: 0.98rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    color: #FFFFFF;
+  }
+
+  .top-meta {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  .stage-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #060B12;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* Cinematic background image layer */
+  .scene-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    transform: scale(1.0);
+  }
+
+  .scene-bg.active {
+    opacity: 1;
+  }
+
+  .ken-burns-in {
+    animation: kbIn 22s ease-out forwards;
+  }
+
+  .ken-burns-out {
+    animation: kbOut 22s ease-out forwards;
+  }
+
+  .ken-burns-pan {
+    animation: kbPan 24s ease-in-out forwards;
+  }
+
+  @keyframes kbIn {
+    from { transform: scale(1.0); }
+    to { transform: scale(1.09); }
+  }
+
+  @keyframes kbOut {
+    from { transform: scale(1.10); }
+    to { transform: scale(1.0); }
+  }
+
+  @keyframes kbPan {
+    from { transform: scale(1.06) translateX(-1.5%); }
+    to { transform: scale(1.06) translateX(1.5%); }
+  }
+
+  .vignette {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(6, 12, 22, 0.42) 0%,
+      rgba(6, 12, 22, 0.08) 35%,
+      rgba(6, 12, 22, 0.15) 68%,
+      rgba(6, 12, 22, 0.72) 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .stage-content {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 26px 34px 96px 34px;
+  }
+
+  /* Structure color badges (DUA) */
+  .badge-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .phase-badge {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: all 0.45s ease;
+  }
+
+  .phase-badge.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .badge-inicio { background: var(--green); border-left: 5px solid #6EE7A8; }
+  .badge-nudo { background: var(--amber); border-left: 5px solid #FDE047; }
+  .badge-desenlace { background: var(--blue); border-left: 5px solid #93C5FD; }
+  .badge-neutral { background: rgba(15, 29, 52, 0.88); border-left: 5px solid var(--gold); }
+
+  .scene-counter {
+    background: rgba(11, 24, 46, 0.80);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #E2E8F0;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  /* Scene specific overlays */
+  .center-overlay {
+    margin: auto 0;
+    width: 100%;
+    transition: opacity 0.5s ease;
+  }
+
+  .hero-card {
+    max-width: 720px;
+    background: rgba(10, 22, 42, 0.82);
+    backdrop-filter: blur(6px);
+    padding: 28px 34px;
+    border-radius: 12px;
+    border-left: 6px solid var(--gold);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  }
+
+  .hero-kicker {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .hero-title {
+    font-size: clamp(1.5rem, 2.8vw, 2.35rem);
+    font-weight: 800;
+    line-height: 1.2;
+    color: #FFFFFF;
+    margin-bottom: 12px;
+  }
+
+  .hero-question {
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    color: #E2E8F0;
+    font-weight: 600;
+  }
+
+  /* Anatomy 3-card layout (Scene 2) */
+  .anatomy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 16px;
+  }
+
+  .anatomy-card {
+    background: rgba(10, 20, 36, 0.90);
+    border-radius: 12px;
+    padding: 22px 20px;
+    border-top: 6px solid transparent;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    transform: translateY(16px);
+    transition: all 0.55s ease;
+  }
+
+  .anatomy-card.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .card-green { border-top-color: #22C55E; }
+  .card-amber { border-top-color: #F59E0B; }
+  .card-blue { border-top-color: #3B82F6; }
+
+  .anatomy-card h3 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+  }
+
+  .card-green h3 { color: #86EFAC; }
+  .card-amber h3 { color: #FCD34D; }
+  .card-blue h3 { color: #93C5FD; }
+
+  .anatomy-card p {
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: #F1F5F9;
+  }
+
+  .elements-strip {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.55s ease;
+  }
+
+  .elements-strip.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .element-pill {
+    background: rgba(15, 31, 56, 0.92);
+    border: 1px solid rgba(229, 185, 76, 0.55);
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 0.94rem;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+
+  .element-pill span {
+    color: var(--gold);
+    margin-right: 6px;
+  }
+
+  /* Synthesis 3-column graphic organizer (Scene 6) */
+  .synthesis-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  .syn-col {
+    background: rgba(10, 20, 36, 0.92);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+  }
+
+  .syn-col.highlight {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+  }
+
+  .syn-col.highlight.syn-green { border-color: #22C55E; }
+  .syn-col.highlight.syn-amber { border-color: #F59E0B; }
+  .syn-col.highlight.syn-blue { border-color: #3B82F6; }
+
+  .syn-thumb {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+    background: #1B2A44;
+  }
+
+  .syn-body {
+    padding: 14px 16px;
+  }
+
+  .syn-tag {
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .syn-green .syn-tag { color: #86EFAC; }
+  .syn-amber .syn-tag { color: #FCD34D; }
+  .syn-blue .syn-tag { color: #93C5FD; }
+
+  .syn-body p {
+    font-size: 0.88rem;
+    line-height: 1.4;
+    color: #E2E8F0;
+  }
+
+  /* Interactive Challenge (Scene 7) */
+  .quiz-box {
+    max-width: 780px;
+    margin: 0 auto;
+    background: rgba(10, 20, 36, 0.92);
+    backdrop-filter: blur(8px);
+    padding: 26px 32px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 20px 44px rgba(0, 0, 0, 0.5);
+  }
+
+  .quiz-step {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 8px;
+  }
+
+  .quiz-question {
+    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 18px;
+  }
+
+  .quiz-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .quiz-btn {
+    padding: 14px 16px;
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.22);
+    background: rgba(25, 42, 70, 0.85);
+    color: #FFFFFF;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .quiz-btn:hover { background: rgba(42, 68, 110, 0.95); transform: translateY(-2px); }
+  .quiz-btn.opt-green { border-color: #22C55E; }
+  .quiz-btn.opt-amber { border-color: #F59E0B; }
+  .quiz-btn.opt-blue { border-color: #3B82F6; }
+  .quiz-btn.correct { background: #1E7E4A; border-color: #86EFAC; }
+  .quiz-btn.wrong { background: #8B2635; border-color: #FCA5A5; }
+
+  .quiz-feedback {
+    margin-top: 14px;
+    font-size: 0.96rem;
+    font-weight: 600;
+    min-height: 24px;
+    color: #FDE047;
+  }
+
+  .quiz-next-btn {
+    margin-top: 14px;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 8px;
+    background: var(--gold);
+    color: #0B1320;
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: none;
+  }
+
+  /* Dialogic Pause Modal Overlay */
+  .pause-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: rgba(8, 16, 30, 0.88);
+    backdrop-filter: blur(8px);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    text-align: center;
+  }
+
+  .pause-overlay.open {
+    display: flex;
+    animation: fadeIn 0.35s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .pause-tag {
+    font-size: 0.88rem;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .pause-title {
+    font-size: clamp(1.35rem, 2.4vw, 2rem);
+    font-weight: 800;
+    max-width: 760px;
+    line-height: 1.3;
+    margin-bottom: 14px;
+    color: #FFFFFF;
+  }
+
+  .pause-guide {
+    font-size: 0.98rem;
+    color: var(--text-muted);
+    max-width: 680px;
+    margin-bottom: 22px;
+    line-height: 1.5;
+  }
+
+  .pause-actions {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    padding: 12px 26px;
+    border-radius: 8px;
+    border: none;
+    background: var(--gold);
+    color: #0B1320;
+    font-family: inherit;
+    font-size: 0.98rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.15s ease, filter 0.15s ease;
+  }
+
+  .btn-primary:hover { transform: translateY(-1px); filter: brightness(1.06); }
+
+  .btn-secondary {
+    padding: 11px 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    background: rgba(255, 255, 255, 0.08);
+    color: #FFFFFF;
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .btn-secondary:hover { background: rgba(255, 255, 255, 0.16); }
+
+  /* Accessible WCAG 2.1 AA Subtitles Bar */
+  .subtitles-bar {
+    position: absolute;
+    left: 28px;
+    right: 28px;
+    bottom: 18px;
+    z-index: 6;
+    background: var(--navy-sub);
+    color: #FFFFFF;
+    padding: 13px 22px;
+    border-radius: 8px;
+    font-size: clamp(0.95rem, 1.45vw, 1.18rem);
+    font-weight: 600;
+    line-height: 1.45;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    transition: opacity 0.25s ease;
+  }
+
+  .subtitles-bar.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Start screen overlay */
+  .start-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 12;
+    background: rgba(8, 16, 30, 0.72);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 28px;
+  }
+
+  .start-overlay.hidden { display: none; }
+
+  .play-big {
+    width: 78px;
+    height: 78px;
+    border-radius: 50%;
+    border: 3px solid var(--gold);
+    background: rgba(11, 24, 46, 0.88);
+    color: var(--gold);
+    font-size: 1.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 6px;
+    margin-bottom: 18px;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+
+  .play-big:hover {
+    transform: scale(1.07);
+    background: var(--gold);
+    color: #0B1320;
+  }
+
+  /* Bottom Video Controls */
+  .controls-bar {
+    background: #0D1624;
+    padding: 14px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .tl-seg {
+    height: 7px;
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: 4px;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .tl-seg-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--gold);
+    transition: width 0.25s linear;
+  }
+
+  .tl-seg.done .tl-seg-fill { width: 100%; }
+
+  .controls-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .ctrl-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .ctrl-btn {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.06);
+    color: #FFFFFF;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .ctrl-btn:hover { background: rgba(255, 255, 255, 0.14); }
+  .ctrl-btn.active { background: var(--blue); border-color: #93C5FD; }
+
+  .teacher-panel {
+    display: none;
+    background: #101B2D;
+    border-top: 1px solid rgba(229, 185, 76, 0.35);
+    padding: 14px 20px;
+    font-size: 0.88rem;
+    color: #E2E8F0;
+    line-height: 1.5;
+  }
+
+  .teacher-panel.open { display: block; }
+  .teacher-panel strong { color: var(--gold); }
+
+  .credits-box {
+    max-width: 760px;
+    margin: 0 auto;
+    background: rgba(10, 20, 36, 0.88);
+    padding: 24px 30px;
+    border-radius: 12px;
+    border-left: 5px solid var(--gold);
+    text-align: left;
+  }
+
+  .credits-box h3 {
+    color: var(--gold);
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+
+  .credits-box p {
+    font-size: 0.94rem;
+    line-height: 1.55;
+    color: #E2E8F0;
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 780px) {
+    .anatomy-grid, .synthesis-grid, .quiz-options { grid-template-columns: 1fr; }
+    .stage-wrapper { aspect-ratio: 16 / 11; }
+    .stage-content { padding: 14px 16px 86px 16px; }
+    .syn-thumb { height: 90px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="player-shell" id="playerShell">
+  <div class="top-bar">
+    <div>
+      <div class="top-title">Descubriendo el relato: El viaje de Kike y el manatí del humedal</div>
+      <div class="top-meta">Español 5.º Grado · Escuela Bilingüe El Silencio · Modelo Instruccional ASSURE</div>
+    </div>
+    <div class="top-meta" id="audioStatusLabel">Audio: Modo silencioso / Esperando MP3</div>
+  </div>
+
+  <div class="stage-wrapper" id="stageWrapper">
+    <div class="scene-bg" id="bgLayerA"></div>
+    <div class="scene-bg" id="bgLayerB"></div>
+    <div class="vignette"></div>
+
+    <!-- Start Overlay -->
+    <div class="start-overlay" id="startOverlay">
+      <button class="play-big" id="startPlayBtn" aria-label="Iniciar video educativo">&#9654;</button>
+      <h2 style="font-size:1.55rem; font-weight:800; margin-bottom:8px;">El viaje de Kike y el manatí del humedal</h2>
+      <p style="max-width:560px; color:#CBD5E1; font-size:0.95rem;">
+        Video educativo interactivo con pausas dialógicas guiadas para el estudio del texto narrativo (Inicio, Nudo, Desenlace, Personajes y Ambiente).
+      </p>
+    </div>
+
+    <!-- Dynamic Stage Content -->
+    <div class="stage-content">
+      <div class="badge-row">
+        <div class="phase-badge" id="phaseBadge">BIENVENIDA</div>
+        <div class="scene-counter" id="sceneCounter">Escena 1 de 8</div>
+      </div>
+      <div class="center-overlay" id="centerOverlay"></div>
+    </div>
+
+    <!-- Accessible Subtitles -->
+    <div class="subtitles-bar" id="subtitlesBar"></div>
+
+    <!-- Dialogic Pause Overlay -->
+    <div class="pause-overlay" id="pauseOverlay">
+      <div class="pause-tag" id="pauseTag">PAUSA DIALÓGICA</div>
+      <div class="pause-title" id="pauseQuestion"></div>
+      <div class="pause-guide" id="pauseGuide"></div>
+      <div class="pause-actions">
+        <button class="btn-secondary" id="timerBtn">Iniciar temporizador de aula (2:00)</button>
+        <button class="btn-primary" id="resumeAfterPauseBtn">Continuar relato</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Player Controls -->
+  <div class="controls-bar">
+    <div class="timeline" id="timeline"></div>
+    <div class="controls-row">
+      <div class="ctrl-group">
+        <button class="ctrl-btn" id="prevBtn">Anterior</button>
+        <button class="ctrl-btn active" id="playPauseBtn">Reproducir</button>
+        <button class="ctrl-btn" id="nextBtn">Siguiente</button>
+        <button class="ctrl-btn" id="restartBtn">Reiniciar</button>
+      </div>
+      <div class="ctrl-group">
+        <button class="ctrl-btn active" id="ccBtn">Subtítulos (CC)</button>
+        <button class="ctrl-btn" id="voiceFallbackBtn" title="Activa una voz de prueba del navegador si aún no has subido tus MP3">Voz de prueba: OFF</button>
+        <button class="ctrl-btn" id="guideBtn">Mediación docente</button>
+        <button class="ctrl-btn" id="fullscreenBtn">Pantalla completa</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="teacher-panel" id="teacherPanel">
+    <strong>Mediación docente para esta escena: </strong>
+    <span id="teacherNoteText"></span>
+  </div>
+</div>
+
+<audio id="sceneAudio" preload="auto"></audio>
+
+<script>
+  // Gentle Web Audio tones (chimes without external dependencies)
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  let audioCtx = null;
+  function playTone(freq, duration = 0.25, type = 'sine', vol = 0.08) {
+    try {
+      if (!audioCtx) audioCtx = new AudioCtx();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    } catch (e) {}
+  }
+
+  function playPauseChime() {
+    playTone(523.25, 0.35, 'sine', 0.08);
+    setTimeout(() => playTone(659.25, 0.45, 'sine', 0.08), 160);
+  }
+
+  function playSuccessChime() {
+    playTone(587.33, 0.22, 'sine', 0.09);
+    setTimeout(() => playTone(880.0, 0.35, 'sine', 0.09), 130);
+  }
+
+  // Helper to resolve .jpg or .png seamlessly
+  function loadImageWithFallback(baseName, callback) {
+    const imgJpg = new Image();
+    imgJpg.onload = () => callback(`imagenes/${baseName}.jpg`);
+    imgJpg.onerror = () => {
+      const imgPng = new Image();
+      imgPng.onload = () => callback(`imagenes/${baseName}.png`);
+      imgPng.onerror = () => callback(null);
+      imgPng.src = `imagenes/${baseName}.png`;
+    };
+    imgJpg.src = `imagenes/${baseName}.jpg`;
+  }
+
+  // All 8 Scenes strictly matching Actividad I script
+  const scenes = [
+    {
+      id: 1,
+      imageBase: 'escena1',
+      audioFile: 'audio/escena1.mp3',
+      durationSec: 18,
+      motion: 'ken-burns-in',
+      badge: 'BIENVENIDA',
+      badgeClass: 'badge-neutral',
+      narration: '¡Hola, chicos y chicas de quinto grado! Bienvenidos a una nueva aventura de Español. En nuestras casas y comunidades siempre escuchamos historias maravillosas. Hoy descubriremos cómo está construido un texto narrativo para comprender mejor todo lo que leemos. ¿Están listos?',
+      teacherNote: 'Recibe al grupo con una sonrisa cálida y realiza una breve consigna de postura atenta antes de pasar a la conceptualización.',
+      renderOverlay: () => `
+        <div class="hero-card">
+          <div class="hero-kicker">Español · Quinto Grado</div>
+          <div class="hero-title">El viaje de Kike y el manatí del humedal</div>
+          <div class="hero-question">¿Qué historias cuentan en tu comunidad?</div>
+        </div>
+      `
+    },
+    {
+      id: 2,
+      imageBase: 'escena3',
+      audioFile: 'audio/escena2.mp3',
+      durationSec: 22,
+      motion: 'ken-burns-pan',
+      badge: 'ANATOMÍA DEL RELATO',
+      badgeClass: 'badge-neutral',
+      narration: 'Toda buena historia tiene tres grandes momentos. Primero, el INICIO, donde conocemos a los personajes y el ambiente, es decir, el lugar y el momento. Segundo, el NUDO, que es el problema o reto principal. Y tercero, el DESENLACE, donde vemos cómo se resuelve el conflicto. ¡Fíjate en los colores para recordarlos fácilmente!',
+      teacherNote: 'Señala en el tablero físico las tarjetas de color Verde (Inicio), Ámbar (Nudo) y Azul (Desenlace) conforme aparecen en pantalla.',
+      renderOverlay: () => `
+        <div class="anatomy-grid">
+          <div class="anatomy-card card-green" id="ac1">
+            <h3>INICIO</h3>
+            <p>¿Quiénes son los personajes y dónde ocurre la historia?</p>
+          </div>
+          <div class="anatomy-card card-amber" id="ac2">
+            <h3>NUDO</h3>
+            <p>¿Qué problema o reto principal surge en el relato?</p>
+          </div>
+          <div class="anatomy-card card-blue" id="ac3">
+            <h3>DESENLACE</h3>
+            <p>¿Cómo se resuelve el conflicto al final?</p>
+          </div>
+        </div>
+        <div class="elements-strip" id="elStrip">
+          <div class="element-pill"><span>PERSONAJES</span> Principales y secundarios</div>
+          <div class="element-pill"><span>AMBIENTE</span> Lugar y momento del relato</div>
+        </div>
+      `,
+      onEnter: () => {
+        setTimeout(() => { document.getElementById('ac1')?.classList.add('show'); playTone(440, 0.12, 'sine', 0.04); }, 600);
+        setTimeout(() => { document.getElementById('ac2')?.classList.add('show'); playTone(494, 0.12, 'sine', 0.04); }, 3200);
+        setTimeout(() => { document.getElementById('ac3')?.classList.add('show'); playTone(523, 0.12, 'sine', 0.04); }, 5800);
+        setTimeout(() => { document.getElementById('elStrip')?.classList.add('show'); }, 8000);
+      }
+    },
+    {
+      id: 3,
+      imageBase: 'escena3',
+      audioFile: 'audio/escena3.mp3',
+      durationSec: 17,
+      motion: 'ken-burns-in',
+      badge: 'INICIO',
+      badgeClass: 'badge-inicio',
+      narration: 'Una mañana soleada en el humedal de San San, Kike salió en su canoa junto a su abuela Martina para observar aves y cuidar las aguas del río. Kike era un niño curioso que amaba la naturaleza y escuchaba con respeto los consejos de su abuela.',
+      teacherNote: 'Al activarse la Pausa 1, abre un diálogo socrático de 2 minutos. Invita especialmente a los estudiantes con NEE a levantar o señalar su tarjeta verde.',
+      pauseAfter: {
+        tag: 'PAUSA DIALÓGICA 1 · INICIO',
+        question: '¿Quiénes son los personajes y cuál es el ambiente de nuestra historia?',
+        guide: 'Conversa con tu docente y tus compañeros antes de continuar. Recuerda observar la etiqueta de color verde.'
+      },
+      renderOverlay: () => ``
+    },
+    {
+      id: 4,
+      imageBase: 'escena4',
+      audioFile: 'audio/escena4.mp3',
+      durationSec: 18,
+      motion: 'ken-burns-in',
+      badge: 'NUDO',
+      badgeClass: 'badge-nudo',
+      narration: 'De pronto, escucharon un chapoteo extraño cerca de los manglares. ¡Era un manatí atrapado en una vieja red de plástico! El animal no podía nadar bien y el agua empezaba a subir por la marea. Kike sintió miedo, pero sabía que debía actuar con calma.',
+      teacherNote: 'En la Pausa 2, organiza un breve intercambio en parejas heterogéneas para identificar el conflicto y predecir una posible solución.',
+      pauseAfter: {
+        tag: 'PAUSA DIALÓGICA 2 · NUDO',
+        question: '¿Cuál es el problema que acaba de surgir? ¿Qué harías tú para ayudar al manatí?',
+        guide: 'Dialoga en pareja durante dos minutos y comparte tu predicción con el grupo.'
+      },
+      renderOverlay: () => ``
+    },
+    {
+      id: 5,
+      imageBase: 'escena5',
+      audioFile: 'audio/escena5.mp3',
+      durationSec: 19,
+      motion: 'ken-burns-out',
+      badge: 'DESENLACE',
+      badgeClass: 'badge-desenlace',
+      narration: 'Recordando la calma que le enseñó su abuela, Kike acercó la canoa despacio. Mientras la abuela Martina sujetaba el bote, Kike liberó con cuidado la aleta del manatí y guardó la red para botarla en tierra firme. El manatí nadó feliz hacia aguas profundas, y ambos regresaron orgullosos a casa.',
+      teacherNote: 'Valida las predicciones que hicieron los estudiantes en la pausa anterior y destaca el valor del cuidado ambiental.',
+      renderOverlay: () => `
+        <div style="margin-top:auto; display:flex; justify-content:flex-end;">
+          <div style="background:rgba(27,94,154,0.90); padding:10px 20px; border-radius:8px; font-weight:700; font-size:0.95rem; border-left:4px solid #93C5FD;">
+            Cuidar el humedal es tarea de todos
+          </div>
+        </div>
+      `
+    },
+    {
+      id: 6,
+      imageBase: 'escena5',
+      audioFile: 'audio/escena6.mp3',
+      durationSec: 21,
+      motion: 'ken-burns-pan',
+      badge: 'SÍNTESIS VISUAL',
+      badgeClass: 'badge-neutral',
+      narration: '¡Excelente! Ahora miremos todo el recorrido de nuestra historia. En el INICIO conocimos a Kike, personaje principal, a la abuela Martina, personaje secundario, y el ambiente del humedal. En el NUDO surgió el problema del manatí atrapado. Y en el DESENLACE vimos cómo resolvieron el reto trabajando juntos.',
+      teacherNote: 'Pide a los estudiantes que ordenen sus tres tarjetas de colores (Verde, Ámbar, Azul) sobre el pupitre siguiendo la secuencia izquierda a derecha.',
+      renderOverlay: () => `
+        <div class="synthesis-grid">
+          <div class="syn-col syn-green" id="syn1">
+            <img class="syn-thumb" id="thumb3" alt="Inicio del relato">
+            <div class="syn-body">
+              <div class="syn-tag">1. Inicio</div>
+              <p><strong>Personajes:</strong> Kike (principal) y abuela Martina (secundario).<br><strong>Ambiente:</strong> Humedal de San San, mañana soleada.</p>
+            </div>
+          </div>
+          <div class="syn-col syn-amber" id="syn2">
+            <img class="syn-thumb" id="thumb4" alt="Nudo del relato">
+            <div class="syn-body">
+              <div class="syn-tag">2. Nudo</div>
+              <p><strong>Conflicto:</strong> Un joven manatí queda atrapado en una red plástica mientras sube la marea.</p>
+            </div>
+          </div>
+          <div class="syn-col syn-blue" id="syn3">
+            <img class="syn-thumb" id="thumb5" alt="Desenlace del relato">
+            <div class="syn-body">
+              <div class="syn-tag">3. Desenlace</div>
+              <p><strong>Solución:</strong> Trabajando en equipo con calma, liberan al manatí y recogen la red.</p>
+            </div>
+          </div>
+        </div>
+      `,
+      onEnter: () => {
+        loadImageWithFallback('escena3', src => { if (src && document.getElementById('thumb3')) document.getElementById('thumb3').src = src; });
+        loadImageWithFallback('escena4', src => { if (src && document.getElementById('thumb4')) document.getElementById('thumb4').src = src; });
+        loadImageWithFallback('escena5', src => { if (src && document.getElementById('thumb5')) document.getElementById('thumb5').src = src; });
+        setTimeout(() => document.getElementById('syn1')?.classList.add('highlight'), 1200);
+        setTimeout(() => { document.getElementById('syn1')?.classList.remove('highlight'); document.getElementById('syn2')?.classList.add('highlight'); }, 7500);
+        setTimeout(() => { document.getElementById('syn2')?.classList.remove('highlight'); document.getElementById('syn3')?.classList.add('highlight'); }, 13500);
+      }
+    },
+    {
+      id: 7,
+      imageBase: 'escena1',
+      audioFile: 'audio/escena7.mp3',
+      durationSec: 40,
+      motion: 'ken-burns-pan',
+      badge: 'RETO: ARMA EL RELATO',
+      badgeClass: 'badge-neutral',
+      interactive: true,
+      narration: '¡Llegó la hora del reto! Observa cada pregunta y levanta tu tarjeta de color o selecciona tu respuesta con el grupo.',
+      teacherNote: 'Permite que los estudiantes levanten su tarjeta antes de hacer clic. En la pregunta 3 (inferencial), recoge diversas opiniones y retroalimenta positivamente.',
+      renderOverlay: () => `<div class="quiz-box" id="quizBox"></div>`,
+      onEnter: () => { initQuiz(); }
+    },
+    {
+      id: 8,
+      imageBase: 'escena8',
+      audioFile: 'audio/escena8.mp3',
+      durationSec: 18,
+      motion: 'ken-burns-out',
+      badge: 'CIERRE METACOGNITIVO',
+      badgeClass: 'badge-neutral',
+      narration: '¡Lo hicieron increíble! Hoy descubrimos que toda narración tiene un orden que nos ayuda a comprenderla mejor. Ahora, junto a tu maestra, crea tu propio esquema ilustrado de una historia de tu comunidad. ¡Hasta la próxima aventura!',
+      teacherNote: 'Realiza la puesta en común metacognitiva («¿Qué fue lo que más te gustó aprender hoy?») y pasa a la actividad de refuerzo en el cuaderno.',
+      renderOverlay: () => `
+        <div class="credits-box">
+          <h3>Hoy aprendimos a descubrir el texto narrativo</h3>
+          <p><strong>Pregunta de cierre:</strong> ¿Qué fue lo que más te gustó aprender hoy?</p>
+          <p style="font-size:0.84rem; color:#CBD5E1; margin-top:14px; border-top:1px solid rgba(255,255,255,0.14); padding-top:10px;">
+            <strong>Créditos pedagógicos:</strong> Material multimedia educativo diseñado para 5.º grado de Español, Escuela Bilingüe El Silencio (Changuinola, Bocas del Toro, Panamá). Basado en el Modelo Instruccional ASSURE. Licencia educativa Creative Commons (CC BY-NC-SA).
+          </p>
+        </div>
+      `
+    }
+  ];
+
+  // Quiz state for Scene 7
+  const quizQuestions = [
+    {
+      step: 'Pregunta 1 de 3 · Comprensión estructural',
+      q: '¿En qué parte de la historia se enredó el manatí en la red de plástico?',
+      options: [
+        { label: 'Inicio', cls: 'opt-green', ok: false },
+        { label: 'Nudo', cls: 'opt-amber', ok: true },
+        { label: 'Desenlace', cls: 'opt-blue', ok: false }
+      ],
+      okMsg: '¡Muy bien! El problema del manatí atrapado corresponde al NUDO de la historia.'
+    },
+    {
+      step: 'Pregunta 2 de 3 · Elementos del relato',
+      q: '¿Cuál era el ambiente principal donde ocurrió el relato?',
+      options: [
+        { label: 'Una ciudad', cls: '', ok: false },
+        { label: 'El humedal de San San', cls: '', ok: true },
+        { label: 'Una montaña nevada', cls: '', ok: false }
+      ],
+      okMsg: '¡Exacto! El ambiente fue el humedal de San San durante una mañana soleada.'
+    },
+    {
+      step: 'Pregunta 3 de 3 · Comprensión inferencial (Pausa Dialógica 3)',
+      q: '¿Por qué crees que Kike guardó la red vieja en su canoa en lugar de dejarla en el agua?',
+      inferential: true
+    }
+  ];
+
+  let currentQuizIdx = 0;
+
+  function initQuiz() {
+    currentQuizIdx = 0;
+    renderQuizQuestion();
+  }
+
+  function renderQuizQuestion() {
+    const box = document.getElementById('quizBox');
+    if (!box) return;
+    const item = quizQuestions[currentQuizIdx];
+    if (item.inferential) {
+      playPauseChime();
+      box.innerHTML = `
+        <div class="quiz-step">${item.step}</div>
+        <div class="quiz-question">${item.q}</div>
+        <p style="color:#CBD5E1; font-size:0.95rem; margin-bottom:18px; line-height:1.5;">
+          Espacio abierto de diálogo: escucha las ideas de tus compañeros sobre el cuidado del ambiente y la responsabilidad con la naturaleza.
+        </p>
+        <button class="btn-primary" onclick="goToScene(7)">Finalizar reto y ver el cierre</button>
+      `;
+      return;
+    }
+
+    box.innerHTML = `
+      <div class="quiz-step">${item.step}</div>
+      <div class="quiz-question">${item.q}</div>
+      <div class="quiz-options">
+        ${item.options.map((opt, idx) => `<button class="quiz-btn ${opt.cls}" onclick="answerQuiz(${idx}, this)">${opt.label}</button>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <button class="quiz-next-btn" id="quizNextBtn" onclick="nextQuizQuestion()">Siguiente pregunta</button>
+    `;
+  }
+
+  window.answerQuiz = function(idx, btnEl) {
+    const item = quizQuestions[currentQuizIdx];
+    const fb = document.getElementById('quizFeedback');
+    const nextBtn = document.getElementById('quizNextBtn');
+    if (item.options[idx].ok) {
+      btnEl.classList.add('correct');
+      fb.textContent = item.okMsg;
+      fb.style.color = '#86EFAC';
+      playSuccessChime();
+      nextBtn.style.display = 'inline-block';
+    } else {
+      btnEl.classList.add('wrong');
+      fb.textContent = 'Buen intento. Observa las pistas del cuento e inténtalo nuevamente.';
+      fb.style.color = '#FCD34D';
+      playTone(260, 0.18, 'triangle', 0.06);
+    }
+  };
+
+  window.nextQuizQuestion = function() {
+    currentQuizIdx++;
+    renderQuizQuestion();
+  };
+
+  // Player state
+  let currentIndex = 0;
+  let isPlaying = false;
+  let showSubtitles = true;
+  let useVoiceFallback = false;
+  let activeLayer = 'A';
+  let sceneTimer = null;
+  let progressInterval = null;
+  let elapsedSec = 0;
+  let classroomTimerId = null;
+
+  const bgA = document.getElementById('bgLayerA');
+  const bgB = document.getElementById('bgLayerB');
+  const phaseBadge = document.getElementById('phaseBadge');
+  const sceneCounter = document.getElementById('sceneCounter');
+  const centerOverlay = document.getElementById('centerOverlay');
+  const subtitlesBar = document.getElementById('subtitlesBar');
+  const pauseOverlay = document.getElementById('pauseOverlay');
+  const startOverlay = document.getElementById('startOverlay');
+  const sceneAudio = document.getElementById('sceneAudio');
+  const timeline = document.getElementById('timeline');
+  const playPauseBtn = document.getElementById('playPauseBtn');
+  const audioStatusLabel = document.getElementById('audioStatusLabel');
+  const teacherNoteText = document.getElementById('teacherNoteText');
+
+  // Build timeline segments
+  scenes.forEach((s, idx) => {
+    const seg = document.createElement('div');
+    seg.className = 'tl-seg';
+    seg.title = `Escena ${s.id}: ${s.badge}`;
+    seg.innerHTML = `<div class="tl-seg-fill" id="tlFill${idx}"></div>`;
+    seg.addEventListener('click', () => {
+      startOverlay.classList.add('hidden');
+      pauseOverlay.classList.remove('open');
+      goToScene(idx, true);
+    });
+    timeline.appendChild(seg);
+  });
+
+  function updateTimeline(idx, pct) {
+    scenes.forEach((_, i) => {
+      const seg = timeline.children[i];
+      const fill = document.getElementById(`tlFill${i}`);
+      if (i < idx) {
+        seg.classList.add('done');
+        fill.style.width = '100%';
+      } else if (i === idx) {
+        seg.classList.remove('done');
+        fill.style.width = `${Math.min(100, pct)}%`;
+      } else {
+        seg.classList.remove('done');
+        fill.style.width = '0%';
+      }
+    });
+  }
+
+  function stopAllAudioAndTimers() {
+    clearTimeout(sceneTimer);
+    clearInterval(progressInterval);
+    sceneAudio.pause();
+    sceneAudio.currentTime = 0;
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  }
+
+  function crossfadeBackground(imgUrl, motionClass) {
+    const incoming = activeLayer === 'A' ? bgB : bgA;
+    const outgoing = activeLayer === 'A' ? bgA : bgB;
+    incoming.className = 'scene-bg';
+    if (imgUrl) {
+      incoming.style.backgroundImage = `url('${imgUrl}')`;
+    } else {
+      incoming.style.backgroundImage = 'linear-gradient(135deg, #132A4A 0%, #0D3B2E 100%)';
+    }
+    void incoming.offsetWidth; // trigger reflow for animation restart
+    incoming.classList.add('active', motionClass);
+    outgoing.classList.remove('active');
+    activeLayer = activeLayer === 'A' ? 'B' : 'A';
+  }
+
+  function handleSceneEnd(scene) {
+    if (scene.interactive) return; // Wait for quiz completion
+    if (scene.pauseAfter) {
+      isPlaying = false;
+      playPauseBtn.textContent = 'Reproducir';
+      playPauseChime();
+      document.getElementById('pauseTag').textContent = scene.pauseAfter.tag;
+      document.getElementById('pauseQuestion').textContent = scene.pauseAfter.question;
+      document.getElementById('pauseGuide').textContent = scene.pauseAfter.guide;
+      resetClassroomTimer();
+      pauseOverlay.classList.add('open');
+      return;
+    }
+    if (currentIndex < scenes.length - 1) {
+      goToScene(currentIndex + 1, true);
+    } else {
+      isPlaying = false;
+      playPauseBtn.textContent = 'Reproducir';
+      updateTimeline(currentIndex, 100);
+    }
+  }
+
+  function startScenePlayback(scene) {
+    elapsedSec = 0;
+    let mp3Playing = false;
+
+    sceneAudio.src = scene.audioFile;
+    sceneAudio.oncanplaythrough = () => {
+      if (!isPlaying) return;
+      mp3Playing = true;
+      audioStatusLabel.textContent = `Audio natural activo: ${scene.audioFile}`;
+      sceneAudio.play().catch(() => {});
+    };
+    sceneAudio.onended = () => {
+      if (isPlaying && mp3Playing) {
+        clearInterval(progressInterval);
+        updateTimeline(currentIndex, 100);
+        handleSceneEnd(scene);
+      }
+    };
+    sceneAudio.onerror = () => {
+      mp3Playing = false;
+      if (useVoiceFallback && 'speechSynthesis' in window) {
+        audioStatusLabel.textContent = 'Audio: Voz de prueba del navegador';
+        const utter = new SpeechSynthesisUtterance(scene.narration);
+        utter.lang = 'es-PA';
+        utter.rate = 0.92;
+        utter.onend = () => {
+          if (isPlaying) {
+            clearInterval(progressInterval);
+            updateTimeline(currentIndex, 100);
+            handleSceneEnd(scene);
+          }
+        };
+        window.speechSynthesis.speak(utter);
+      } else {
+        audioStatusLabel.textContent = 'Audio: Subtítulos sincronizados (agrega tus MP3 en /audio)';
+      }
+    };
+
+    // Visual timer & fallback duration progression
+    progressInterval = setInterval(() => {
+      if (!isPlaying) return;
+      if (mp3Playing && sceneAudio.duration) {
+        const pct = (sceneAudio.currentTime / sceneAudio.duration) * 100;
+        updateTimeline(currentIndex, pct);
+      } else {
+        elapsedSec += 0.25;
+        const pct = (elapsedSec / scene.durationSec) * 100;
+        updateTimeline(currentIndex, pct);
+        if (elapsedSec >= scene.durationSec && !useVoiceFallback) {
+          clearInterval(progressInterval);
+          handleSceneEnd(scene);
+        }
+      }
+    }, 250);
+  }
+
+  window.goToScene = function(idx, autoPlay = true) {
+    stopAllAudioAndTimers();
+    pauseOverlay.classList.remove('open');
+    currentIndex = Math.max(0, Math.min(scenes.length - 1, idx));
+    const scene = scenes[currentIndex];
+
+    // Update UI
+    sceneCounter.textContent = `Escena ${scene.id} de ${scenes.length}`;
+    phaseBadge.className = `phase-badge ${scene.badgeClass}`;
+    phaseBadge.textContent = scene.badge;
+    setTimeout(() => phaseBadge.classList.add('visible'), 60);
+
+    centerOverlay.innerHTML = scene.renderOverlay();
+    subtitlesBar.textContent = scene.narration;
+    subtitlesBar.classList.toggle('hidden', !showSubtitles);
+    teacherNoteText.textContent = scene.teacherNote;
+    updateTimeline(currentIndex, 0);
+
+    loadImageWithFallback(scene.imageBase, (url) => {
+      crossfadeBackground(url, scene.motion);
+    });
+
+    if (scene.onEnter) scene.onEnter();
+
+    isPlaying = autoPlay;
+    playPauseBtn.textContent = isPlaying ? 'Pausar' : 'Reproducir';
+    if (isPlaying) startScenePlayback(scene);
+  };
+
+  // Classroom 2-minute timer inside Dialogic Pause
+  function resetClassroomTimer() {
+    clearInterval(classroomTimerId);
+    const btn = document.getElementById('timerBtn');
+    btn.textContent = 'Iniciar temporizador de aula (2:00)';
+  }
+
+  document.getElementById('timerBtn').addEventListener('click', () => {
+    clearInterval(classroomTimerId);
+    let remaining = 120;
+    const btn = document.getElementById('timerBtn');
+    classroomTimerId = setInterval(() => {
+      remaining--;
+      const m = Math.floor(remaining / 60);
+      const s = String(remaining % 60).padStart(2, '0');
+      btn.textContent = `Tiempo de diálogo: ${m}:${s}`;
+      if (remaining <= 0) {
+        clearInterval(classroomTimerId);
+        btn.textContent = 'Tiempo completado';
+        playPauseChime();
+      }
+    }, 1000);
+  });
+
+  // Control event listeners
+  document.getElementById('startPlayBtn').addEventListener('click', () => {
+    startOverlay.classList.add('hidden');
+    goToScene(0, true);
+  });
+
+  document.getElementById('resumeAfterPauseBtn').addEventListener('click', () => {
+    resetClassroomTimer();
+    pauseOverlay.classList.remove('open');
+    goToScene(currentIndex + 1, true);
+  });
+
+  playPauseBtn.addEventListener('click', () => {
+    if (!startOverlay.classList.contains('hidden')) {
+      startOverlay.classList.add('hidden');
+      goToScene(0, true);
+      return;
+    }
+    if (isPlaying) {
+      isPlaying = false;
+      playPauseBtn.textContent = 'Reproducir';
+      sceneAudio.pause();
+      if ('speechSynthesis' in window) window.speechSynthesis.pause();
+    } else {
+      isPlaying = true;
+      playPauseBtn.textContent = 'Pausar';
+      if (sceneAudio.src && !sceneAudio.error) {
+        sceneAudio.play().catch(() => {});
+      } else if ('speechSynthesis' in window && window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      } else {
+        startScenePlayback(scenes[currentIndex]);
+      }
+    }
+  });
+
+  document.getElementById('prevBtn').addEventListener('click', () => {
+    startOverlay.classList.add('hidden');
+    goToScene(currentIndex - 1, true);
+  });
+
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    startOverlay.classList.add('hidden');
+    goToScene(currentIndex + 1, true);
+  });
+
+  document.getElementById('restartBtn').addEventListener('click', () => {
+    startOverlay.classList.add('hidden');
+    goToScene(0, true);
+  });
+
+  document.getElementById('ccBtn').addEventListener('click', (e) => {
+    showSubtitles = !showSubtitles;
+    subtitlesBar.classList.toggle('hidden', !showSubtitles);
+    e.target.classList.toggle('active', showSubtitles);
+  });
+
+  document.getElementById('voiceFallbackBtn').addEventListener('click', (e) => {
+    useVoiceFallback = !useVoiceFallback;
+    e.target.textContent = useVoiceFallback ? 'Voz de prueba: ON' : 'Voz de prueba: OFF';
+    e.target.classList.toggle('active', useVoiceFallback);
+  });
+
+  document.getElementById('guideBtn').addEventListener('click', (e) => {
+    const panel = document.getElementById('teacherPanel');
+    panel.classList.toggle('open');
+    e.target.classList.toggle('active', panel.classList.contains('open'));
+  });
+
+  document.getElementById('fullscreenBtn').addEventListener('click', () => {
+    const shell = document.getElementById('playerShell');
+    if (!document.fullscreenElement) {
+      shell.requestFullscreen?.();
+    } else {
+      document.exitFullscreen?.();
+    }
+  });
+
+  // Preload Scene 1 background on start screen
+  loadImageWithFallback('escena1', (url) => {
+    if (url) {
+      bgA.style.backgroundImage = `url('${url}')`;
+      bgA.classList.add('active');
+    }
+  });
+</script>
+</body>
+</html>
